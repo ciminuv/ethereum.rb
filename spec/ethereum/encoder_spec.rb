@@ -183,6 +183,47 @@ describe Ethereum::Encoder do
     it { expect( encoder.encode_arguments(function.inputs, ["żółć", [5, 20]])).to eq data }
   end
 
+  context "encode tuple" do
+    let (:abi) {
+      {
+        "inputs" => [
+          {
+            "components" => [
+              {
+                "type" => "address"
+              },
+              {
+                "type" => "address[]"
+              }
+            ],
+            "type" => "tuple[]"
+          }
+        ],
+        "outputs" => [],
+      }
+    }
+    let (:data) { "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002" }
+    # it { expect( decoder.decode_arguments(function.inputs, data)).to eq ["żółć", [5, 20]] }
+    it { expect( encoder.encode_arguments(function.inputs, [[
+      {
+        contractAddress: "0x0000000000000000000000000000000000000000",
+        tokenAddresses:["0x0000000000000000000000000000000000000001", "0x0000000000000000000000000000000000000002"]
+      }
+    ]])).to eq data }
+
+    it 'asd' do
+      a = encoder.encode_arguments(function.inputs, [[
+        {
+          contractAddress: "0x1308dbC378788691EfaAA145CACd457fce72796d",
+          tokenAddresses:["0x6063a52a3Eeecd0fB0EA360eBfC05a4Ef5620814", "0x1822B35B6Bc0003aFf6e0F27CF8d7f7B8CDA02f1"]
+        }
+      ]])
+      puts '>>>>'
+      puts a
+      puts '>>>>'
+    end
+  end
+
   context "raise exception if too many args" do
     let(:abi) { {"inputs" => [{"type" => "string"}], "outputs" => [] } }
     let (:data) { "00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000008c5bcc3b3c582c487000000000000000000000000000000000000000000000000" }
